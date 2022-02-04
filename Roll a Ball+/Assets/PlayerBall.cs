@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerBall : MonoBehaviour
 {
     public int itemCount;
     public float jumpPower;
+    public GameManagerLogic manager;
     bool isJump;
     Rigidbody rigid;
     AudioSource audio;
@@ -55,6 +57,25 @@ public class PlayerBall : MonoBehaviour
             itemCount++;
             audio.Play();
             other.gameObject.SetActive(false);
+            manager.GetItem(itemCount);
+        }
+
+        else if(other.tag == "Finish")
+        {
+            if(manager.total_item_cnt == itemCount)
+            {
+                if (manager.stage == 2)
+                {
+                    SceneManager.LoadScene("ClearScene");
+                }
+                else
+                    SceneManager.LoadScene("Stage"+(manager.stage + 1));
+            }
+            else
+            {
+                // 게임 재시작
+                SceneManager.LoadScene("Stage"+manager.stage);
+            }
         }
     }
 }
